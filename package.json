@@ -1,0 +1,13 @@
+{
+  "name": "one-click-account",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^1.18.1"
+  }
+}
