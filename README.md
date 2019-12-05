@@ -11,5 +11,5 @@ A simple script to automate the process of getting a card number from Houstonlib
 ![Screenshot of the script logs](https://i.imgur.com/WIPEJdu.png)
 
 ## Support
-[![paypal](https://icon-library.net/images/paypal-donate-icon/paypal-donate-icon-15.jpg)]([https://www.paypal.me/sharlsherif/5])
+[![paypal donation](https://icon-library.net/images/paypal-donate-icon/paypal-donate-icon-15.jpg)](https://bit.ly/2YkUSds)
 
