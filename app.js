@@ -1,20 +1,20 @@
 const app = require('express')();
 const puppeteer = require('puppeteer')
 const fakeInfoGenerator = 'https://www.fakeaddressgenerator.com/World_Address/get_us_address/city/Houston'
-const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/registration/$N?pc=SYMWS_HOUSTON'
+const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/registration/$N?pc=SYMWS_HOUSTON';
 
-app.get('/generate', async (req,res)=> {
+(async function (req,res){
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox']
   })
 
   const page = await browser.newPage()
-  console.log('Opened the browser..')
+  console.log('Opening the headless browser..\n')
 
   await page.goto(fakeInfoGenerator, { waitUntil: 'networkidle0', timeout: false }) // wait until page load
-  console.log('Started the process..')
-  console.log('Gathering fake information..')
+  console.log('Started the process..\n')
+  console.log('Gathering fake information..\n')
   // get name, color from the page dom
   // split both values into an array of words
   const info = await page.evaluate(() => {
@@ -35,16 +35,16 @@ app.get('/generate', async (req,res)=> {
 
     return {...address, ...basicInfo}
   })
-  console.log('Going to Houstonlibrary website..')
+  console.log('Going to Houstonlibrary website..\n')
   await page.goto(HoustonLibrary, { waitUntil: 'networkidle0', timeout: false }) // wait until page load
 
-  const randomPIN = await page.evaluate( info => {
+  await page.evaluate( info => {
     const splitName = info['Full Name'].split('&nbsp;')
     const firstName = splitName[0]
     const lastName = splitName[2]
     const randomPIN = Math.round(Math.random()* 32201);
 
-    console.log('Entering fake information in the registration form..')
+    console.log('Filling up the Houston Library registration form..\n')
     
     document.querySelector('input.FIRST_NAME').value = firstName
     document.querySelector('input.LAST_NAME').value = lastName
@@ -61,15 +61,18 @@ app.get('/generate', async (req,res)=> {
     document.querySelector('#pwdField2').value = randomPIN
     document.querySelector('#registrationSubmit').click();
     
-    return randomPIN
+    // return randomPIN
   }, info)
 
   await page.waitForSelector('.postRegistration p')
 
-  console.log('Registered a houston library account')
+  console.log('Successfully registered a Houston Library Card Number! \n')
   const libraryCode = await page.evaluate(()=> document.querySelector('.postRegistration p').innerText.split(' ')[5].trim().replace('.',''))
-  console.log("Code : ", code)
-  res.status(200).send({randomPIN, code: Number(libraryCode)})
- })
+  console.log("Here is your Library Card Number :", libraryCode+'\n')
+  console.log("Go to https://www.lynda.com/portal/sip?org=houstonlibrary.org and click on 'Create Profile' then follow the steps.\n")
+  console.log("Donate to https://paypal.me/SharlSherif if you find this script useful\n")
+  console.log("Exiting ...\n")
+  process.exit(0);
+ })()
 
-app.listen(5000, ()=> console.log('app started on 5000'))
+app.listen(5000, ()=> console.log('Script is running on port 5000\n'))
