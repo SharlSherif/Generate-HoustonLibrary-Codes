@@ -8,6 +8,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "puppeteer": "^1.18.1"
+    "puppeteer": "^1.20.0"
   }
 }

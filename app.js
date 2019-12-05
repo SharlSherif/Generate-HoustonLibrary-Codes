@@ -3,14 +3,18 @@ const puppeteer = require('puppeteer')
 const fakeInfoGenerator = 'https://www.fakeaddressgenerator.com/World_Address/get_us_address/city/Houston'
 const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/registration/$N?pc=SYMWS_HOUSTON'
 
-app.post('/generate', async (req,res)=> {
+app.get('/generate', async (req,res)=> {
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox']
   })
 
   const page = await browser.newPage()
+  console.log('Opened the browser..')
+
   await page.goto(fakeInfoGenerator, { waitUntil: 'networkidle0', timeout: false }) // wait until page load
+  console.log('Started the process..')
+  console.log('Gathering fake information..')
   // get name, color from the page dom
   // split both values into an array of words
   const info = await page.evaluate(() => {
@@ -31,7 +35,7 @@ app.post('/generate', async (req,res)=> {
 
     return {...address, ...basicInfo}
   })
-
+  console.log('Going to Houstonlibrary website..')
   await page.goto(HoustonLibrary, { waitUntil: 'networkidle0', timeout: false }) // wait until page load
 
   const randomPIN = await page.evaluate( info => {
@@ -40,6 +44,8 @@ app.post('/generate', async (req,res)=> {
     const lastName = splitName[2]
     const randomPIN = Math.round(Math.random()* 32201);
 
+    console.log('Entering fake information in the registration form..')
+    
     document.querySelector('input.FIRST_NAME').value = firstName
     document.querySelector('input.LAST_NAME').value = lastName
     document.querySelector('input.LAST_NAME').value = lastName
@@ -59,10 +65,11 @@ app.post('/generate', async (req,res)=> {
   }, info)
 
   await page.waitForSelector('.postRegistration p')
-  
-  const libraryCode = await page.evaluate(()=> document.querySelector('.postRegistration p').innerText.split(' ')[5].trim().replace('.',''))
 
+  console.log('Registered a houston library account')
+  const libraryCode = await page.evaluate(()=> document.querySelector('.postRegistration p').innerText.split(' ')[5].trim().replace('.',''))
+  console.log("Code : ", code)
   res.status(200).send({randomPIN, code: Number(libraryCode)})
  })
 
-app.listen(3000, ()=> console.log('app started on 3000'))
+app.listen(5000, ()=> console.log('app started on 5000'))
