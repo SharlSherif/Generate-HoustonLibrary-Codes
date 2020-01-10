@@ -3,7 +3,7 @@ A simple script to automate the process of getting a card number from Houstonlib
 
 # Usage
 
- - Install required packages : `npm install`
+ - Install required packages : `npm install` - this might take a few minutes since Chromium is > 100mb.-
 - Run the script : `node app.js`
 
 # Example
