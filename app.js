@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
 const fakeInfoGenerator = 'https://www.fakeaddressgenerator.com/World_Address/get_us_address/city/Houston'
 const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/registration/$N?pc=SYMWS_HOUSTON';
 
-(async function (req,res){
+(async function (){
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox']
@@ -38,7 +38,7 @@ const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/regi
   console.log('Going to Houstonlibrary website..\n')
   await page.goto(HoustonLibrary, { waitUntil: 'networkidle0', timeout: false }) // wait until page load
 
-  await page.evaluate( info => {
+  let randomPIN = await page.evaluate( info => {
     const splitName = info['Full Name'].split('&nbsp;')
     const firstName = splitName[0]
     const lastName = splitName[2]
@@ -61,7 +61,7 @@ const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/regi
     document.querySelector('#pwdField2').value = randomPIN
     document.querySelector('#registrationSubmit').click();
     
-    // return randomPIN
+    return randomPIN
   }, info)
 
   await page.waitForSelector('.postRegistration p')
@@ -69,6 +69,7 @@ const HoustonLibrary = 'https://halan.sdp.sirsi.net/client/en_US/hou/search/regi
   console.log('Successfully registered a Houston Library Card Number! \n')
   const libraryCode = await page.evaluate(()=> document.querySelector('.postRegistration p').innerText.split(' ')[5].trim().replace('.',''))
   console.log("Here is your Library Card Number :", libraryCode+'\n')
+  console.log("Here is your Library PIN Number :", randomPIN+'\n')
   console.log("Go to https://www.lynda.com/portal/sip?org=houstonlibrary.org and click on 'Create Profile' then follow the steps.\n")
   console.log("Donate to https://paypal.me/SharlSherif if you find this script useful\n")
   console.log("Exiting ...\n")
