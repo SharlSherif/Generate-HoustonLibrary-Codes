@@ -66,7 +66,7 @@ const CantonLibrary = 'https://search.starklibrary.org/selfreg';
 
   await page.waitForSelector('.postRegistration p')
 
-  console.log('Successfully registered a Houston Library Card Number! \n')
+  console.log('Successfully registered a Canton Library Card Number! \n')
   const libraryCode = await page.evaluate(()=> document.querySelector('.postRegistration p').innerText.split(' ')[5].trim().replace('.',''))
   console.log("Here is your Library Card Number :", libraryCode+'\n')
   console.log("Here is your Library PIN Number :", randomPIN+'\n')
